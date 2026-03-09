@@ -1,4 +1,5 @@
 #!/bin/bash
+source scripts/db_utils.sh
 
 function create_database() {
     read -p "Enter Database Name: " db_name
@@ -44,9 +45,9 @@ function main_menu() {
         
         case $choice in
             1) create_database ;;
-            2) echo "Soon" ;;
-            3) echo "Soon" ;;
-            4) echo "Soon" ;;
+            2) list_databases ;;
+            3) connect_to_database ;;
+            4) drop_database ;;
             5) 
                echo "We Love You :) Goodbye"
                exit 0 
