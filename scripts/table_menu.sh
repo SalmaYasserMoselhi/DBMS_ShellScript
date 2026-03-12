@@ -6,6 +6,8 @@ RESET="\e[0m"
 
 source scripts/schema_builder.sh
 source scripts/table_utils.sh
+source scripts/insert.sh
+source scripts/select.sh
 
 function table_menu() {
     local db_name
@@ -17,14 +19,18 @@ function table_menu() {
         echo "1) Create Table"
         echo "2) List Tables"
         echo "3) Drop Table"
-        echo "4) Exit to Main Menu"
+        echo "4) Insert into Table"
+        echo "5) Select from Table"
+        echo "6) Exit to Main Menu"
         read -r -p "$db_name >> " choice
 
         case $choice in
             1) create_table ;;
             2) list_tables ;;
             3) drop_table ;;
-            4)
+            4) insert_into_table ;;
+            5) select_from_table ;;
+            6)
                 echo -e "${GREEN}Returning to Main Menu...${RESET}"
                 return
                 ;;
