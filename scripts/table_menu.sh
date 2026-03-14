@@ -8,6 +8,7 @@ source scripts/schema_builder.sh
 source scripts/table_utils.sh
 source scripts/insert.sh
 source scripts/select.sh
+source scripts/update.sh
 
 function table_menu() {
     local db_name
@@ -21,7 +22,8 @@ function table_menu() {
         echo "3) Drop Table"
         echo "4) Insert into Table"
         echo "5) Select from Table"
-        echo "6) Exit to Main Menu"
+        echo "6) Update Table"
+        echo "7) Exit to Main Menu"
         read -r -p "$db_name >> " choice
 
         case $choice in
@@ -30,7 +32,8 @@ function table_menu() {
             3) drop_table ;;
             4) insert_into_table ;;
             5) select_from_table ;;
-            6)
+            6) update_table ;;
+            7)
                 echo -e "${GREEN}Returning to Main Menu...${RESET}"
                 return
                 ;;
