@@ -1,4 +1,5 @@
 #!/bin/bash
+shopt -s extglob
 
 # Table creation with meta schema 
 
