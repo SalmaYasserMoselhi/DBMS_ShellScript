@@ -6,6 +6,7 @@ RED="\e[0;31m"
 RESET="\e[0m"
 
 function update_table() {
+    local table_name
     read -r -p "Enter Table Name to Update: " table_name
 
     if [[ -z "$table_name" ]]; then
@@ -27,15 +28,19 @@ function update_table() {
         ;;
     esac
 
+    local meta
     meta=$(cat "$CURRENT_DB/$table_name.meta")
 
+    local columns
     IFS='|' read -r -a columns <<< "$meta"
 
-    pk_index=-1
-    pk_name=""
-    pk_type=""
+    local pk_index=-1
+    local pk_name=""
+    local pk_type=""
 
+    local i
     for (( i=0; i<${#columns[@]}; i++ )); do
+        local parts
         IFS=':' read -r -a parts <<< "${columns[$i]}"
         if [[ "${parts[2]}" == "pk" ]]; then
             pk_index=$i
@@ -55,6 +60,7 @@ function update_table() {
         return
     fi
 
+    local pk_value
     read -r -p "Enter the $pk_name (PK) of the row to update: " pk_value
 
     if [[ -z "$pk_value" ]]; then
@@ -69,7 +75,7 @@ function update_table() {
         fi
     fi
 
-    pk_col_num=$((pk_index + 1))
+    local pk_col_num=$((pk_index + 1))
     if ! awk -F'|' -v col="$pk_col_num" -v val="$pk_value" '$col == val {found=1} END {exit !found}' "$CURRENT_DB/$table_name.tbl" 2>/dev/null; then
         echo -e "${RED}Error: No row found with $pk_name = '$pk_value'.${RESET}"
         return
@@ -78,10 +84,11 @@ function update_table() {
     echo ""
     echo "Available columns:"
     for (( i=0; i<${#columns[@]}; i++ )); do
+        local parts
         IFS=':' read -r -a parts <<< "${columns[$i]}"
-        col_name="${parts[0]}"
-        col_type="${parts[1]}"
-        col_pk="${parts[2]}"
+        local col_name="${parts[0]}"
+        local col_type="${parts[1]}"
+        local col_pk="${parts[2]}"
         if [[ "$col_pk" == "pk" ]]; then
             echo "  $((i + 1))) $col_name ($col_type) [PK]"
         else
@@ -89,6 +96,7 @@ function update_table() {
         fi
     done
 
+    local col_num
     read -r -p "Enter column number to update: " col_num
 
     if [[ ! "$col_num" =~ ^[1-9][0-9]*$ ]] || (( col_num > ${#columns[@]} )); then
@@ -96,12 +104,14 @@ function update_table() {
         return
     fi
 
-    target_index=$((col_num - 1))
+    local target_index=$((col_num - 1))
+    local target_parts
     IFS=':' read -r -a target_parts <<< "${columns[$target_index]}"
-    target_name="${target_parts[0]}"
-    target_type="${target_parts[1]}"
-    target_pk="${target_parts[2]}"
+    local target_name="${target_parts[0]}"
+    local target_type="${target_parts[1]}"
+    local target_pk="${target_parts[2]}"
 
+    local new_value
     read -r -p "Enter new value for '$target_name': " new_value
 
     if [[ -z "$new_value" ]]; then
